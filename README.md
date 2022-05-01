@@ -22,6 +22,7 @@ Then, run:
 $ docker-compose up
 ```
 
+Finally, your Symfony application is ready. `localhost:8000`
 
 # XDebug
 
