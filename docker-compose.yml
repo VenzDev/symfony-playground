@@ -37,5 +37,14 @@ services:
       - ./mysql:/var/lib/mysql
     networks:
       - symfony
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: mysql
+    ports:
+      - 8080:80
+    networks:
+      - symfony
 networks:
   symfony:

@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block login %}
+    <div class="position-absolute-centre">
+        <form class="p-5 bg-white rounded shadow-sm" action="{{ path('app_login') }}" method="post">
+            {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+            {% endfor %}
+
+            {% if error %}
+                <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+            {% endif %}
+
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+            <label for="username">Email:</label>
+            <input class="form-control mb-3" type="email" id="username" name="_username" value="{{ last_username }}"/>
+
+            <label for="password">Password:</label>
+            <input class="form-control mb-3" type="password" id="password" name="_password"/>
+            <div class="container">
+                <div class="col-md-12 text-center">
+                    <button type="submit" class="btn btn-primary">
+                        <span class="d-none spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        <span>Login</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('login') }}
+{% endblock %}
