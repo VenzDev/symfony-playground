@@ -4,12 +4,12 @@ namespace App\Controller\Admin\Pages;
 
 use App\Repository\AdminRepository;
 use App\Repository\LoginAttemptRepository;
+use App\Resources\AdminGraph;
 use App\Resources\AdminResources;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class AdminController extends DashboardController
 {
@@ -73,48 +73,11 @@ class AdminController extends DashboardController
     }
 
     #[Route('/admin/login_logs', name: 'app_login_logs_json')]
-    public function getLoginLogsJSON(LoginAttemptRepository $loginAttemptRepository, SerializerInterface $serializer): JsonResponse
+    public function getLoginLogsJSON(AdminGraph $adminGraph): JsonResponse
     {
-        $loginAttempts = $loginAttemptRepository->getLoginAttempts();
+        $data = $adminGraph->getData();
 
-        $labels = [];
-        $data = [];
-
-        $daysAgo = 30;
-
-        while ($daysAgo >= 0) {
-            $date = (new \DateTime())->modify("-$daysAgo day");
-
-            $loginInThisDay = $this->xd($loginAttempts, $date);
-
-            $labels[] = $date->format('m-d');
-            $data[] = $loginInThisDay;
-
-            $daysAgo--;
-        }
-
-
-        return $this->json(['labels' => $labels, 'data' => $data]);
+        return $this->json($data);
     }
 
-    private function xd($data, \DateTime $date)
-    {
-        $dateStart = clone $date;
-        $dateStart->setTime(0, 0, 0);
-
-        $dateEnd = clone $date;
-        $dateEnd->setTime(23, 59, 59);
-        
-        $loginInThisDay = 0;
-
-        foreach ($data as $d) {
-            $date = $d['date'];
-
-            if ($date >= $dateStart && $date <= $dateEnd) {
-                $loginInThisDay++;
-            }
-        }
-
-        return $loginInThisDay;
-    }
 }

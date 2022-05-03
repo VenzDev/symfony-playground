@@ -2,14 +2,11 @@ import $ from 'jquery';
 import 'datatables.net-bs5';
 import Chart from 'chart.js/auto'
 
-$(document).ready(function () {
-    $('#example').DataTable();
-
-
+const handleGraphData = () => {
     $.ajax({
         url: '/admin/login_logs',
         type: 'GET',
-        success: function (_data) {
+        success: (_data) => {
             let labels = _data['labels'];
             let loginsAttemptsByEachDay = _data['data'];
 
@@ -31,7 +28,15 @@ $(document).ready(function () {
 
             new Chart($('#lastLoginChart'), config);
         },
+        error: () => console.log('Cannot initiate Graph')
     })
+}
 
+const initDataTable = () => {
+    $('#example').DataTable();
+}
 
+$(document).ready(() => {
+    initDataTable();
+    handleGraphData();
 });
