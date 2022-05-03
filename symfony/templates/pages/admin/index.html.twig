@@ -48,6 +48,7 @@
                     <thead>
                     <tr>
                         <th>ID</th>
+                        <th>Name</th>
                         <th>Email</th>
                         <th>Is Blocked</th>
                         <th>Is Verified</th>
@@ -59,6 +60,7 @@
                     {% for admin in admins %}
                         <tr>
                             <td>{{ admin.id }}</td>
+                            <td>{{ admin.name }}</td>
                             <td>{{ admin.email }}</td>
                             <td>{{ admin.isBlocked|yesNo }}</td>
                             <td>{{ admin.isVerified|yesNo }}</td>

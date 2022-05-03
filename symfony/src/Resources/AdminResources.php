@@ -53,7 +53,9 @@ class AdminResources
             if (in_array($admin->getId(), $loginAttemptsIds)) {
                 $lastAttempt = $this->getByAttemptId($loginAttempts, $admin->getId());
 
-                $this->onlineToday = $this->isToday($lastAttempt->getDate());
+                if ($this->isToday($lastAttempt->getDate())) {
+                    $this->onlineToday++;
+                }
 
                 $admin->setLastLoginAttempt($lastAttempt);
             }

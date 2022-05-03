@@ -22,6 +22,7 @@ class AdminFixtures extends Fixture
     {
         $superAdmin = new Admin();
 
+        $superAdmin->setName('ROOT');
         $superAdmin->setEmail('carparkersender@gmail.com');
         $superAdmin->setRoles(['ROLE_SUPER_ADMIN']);
 
@@ -33,6 +34,7 @@ class AdminFixtures extends Fixture
 
         $admin = new Admin();
 
+        $admin->setName('John');
         $admin->setEmail('email@gmail.com');
         $admin->setRoles(['ROLE_ADMIN']);
 
@@ -42,10 +44,11 @@ class AdminFixtures extends Fixture
         $loginAttempt = new LoginAttempt();
 
         $loginAttempt->setUserAdmin($admin);
-        $loginAttempt->setDate(new \DateTime());
+        $loginAttempt->setDate((new \DateTime())->modify('-1 day'));
 
         $admin2 = new Admin();
 
+        $admin2->setName('Michael');
         $admin2->setEmail('email1@gmail.com');
         $admin2->setRoles(['ROLE_ADMIN']);
 

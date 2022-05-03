@@ -41,6 +41,9 @@ class Admin implements UserInterface, PasswordAuthenticatedUserInterface
 
     private ?LoginAttempt $lastLoginAttempt;
 
+    #[ORM\Column(type: 'string', length: 255)]
+    private $name;
+
     public function __construct()
     {
         $this->loginAttempts = new ArrayCollection();
@@ -201,6 +204,18 @@ class Admin implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsBlocked(bool $isBlocked): self
     {
         $this->isBlocked = $isBlocked;
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
 
         return $this;
     }
