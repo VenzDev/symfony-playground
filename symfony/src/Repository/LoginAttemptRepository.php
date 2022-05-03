@@ -69,4 +69,14 @@ class LoginAttemptRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function getLoginAttempts()
+    {
+        return $this->createQueryBuilder('l')
+            ->select('userAdmin.id', 'l.date')
+            ->innerJoin('l.userAdmin', 'userAdmin')
+            ->orderBy('l.date', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }
