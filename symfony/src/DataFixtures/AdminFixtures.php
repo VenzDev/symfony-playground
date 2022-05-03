@@ -35,7 +35,7 @@ class AdminFixtures extends Fixture
         $admin = new Admin();
 
         $admin->setName('John');
-        $admin->setEmail('email@gmail.com');
+        $admin->setEmail('kamil.bechta1@gmail.com');
         $admin->setRoles(['ROLE_ADMIN']);
 
         $password = $this->passwordHasher->hashPassword($superAdmin, 'Zaq12wsxcde3!');
