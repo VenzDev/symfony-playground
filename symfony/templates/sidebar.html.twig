@@ -3,11 +3,14 @@
         <span class="fs-5">P<span class="d-none d-sm-inline">layground</span></span>
     </a>
     <hr class="w-100 d-none d-sm-block">
-    <ul class="nav nav-pills flex-sm-column flex-row flex-nowrap flex-shrink-1 flex-sm-grow-0 flex-grow-1 mb-sm-auto mb-0 justify-content-center align-items-center align-items-sm-start" id="menu">
+    <ul class="nav nav-pills flex-sm-column flex-row flex-nowrap flex-shrink-1 flex-sm-grow-0 flex-grow-1 mb-sm-auto mb-0 justify-content-center align-items-center align-items-sm-start"
+        id="menu">
         {% for sidebarItem in __sidebar %}
             <li class="nav-item">
-                <a href="{{ path(sidebarItem.path) }}" class="nav-link px-2 text-white {% if sidebarItem.active %} active {% endif %}">
-                    <i class="fs-5 {{ sidebarItem.icon }}"></i><span class="ms-1 d-none d-sm-inline">{{ sidebarItem.title }}</span>
+                <a href="{{ path(sidebarItem.path) }}"
+                   class="nav-link px-2 text-white {% if sidebarItem.active %} active {% endif %}">
+                    <i class="fs-5 {{ sidebarItem.icon }}"></i><span
+                            class="ms-1 d-none d-sm-inline">{{ sidebarItem.title }}</span>
                 </a>
             </li>
         {% endfor %}
@@ -15,12 +18,13 @@
     </ul>
     <hr class="w-100 d-none d-sm-block">
     <div class="dropdown py-sm-4 mt-sm-auto ms-auto ms-sm-0 flex-shrink-1">
-        <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+        <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1"
+           data-bs-toggle="dropdown" aria-expanded="false">
             <img src="https://github.com/mdo.png" alt="hugenerd" width="28" height="28" class="rounded-circle">
             <span class="d-none d-sm-inline mx-1">Joe</span>
         </a>
         <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
-            <li><a class="dropdown-item" href="#">Change Password</a></li>
+            <li><a class="dropdown-item" href="{{ path('app_profile') }}">Profile</a></li>
             <li>
                 <hr class="dropdown-divider">
             </li>
