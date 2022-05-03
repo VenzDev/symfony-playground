@@ -4,8 +4,10 @@ namespace App\Controller\Admin\Pages;
 
 use App\Repository\AdminRepository;
 use App\Repository\LoginAttemptRepository;
+use App\Resources\AdminGraph;
 use App\Resources\AdminResources;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -58,7 +60,7 @@ class AdminController extends DashboardController
             foreach ($attempts as $attempt) {
                 $entityManager->remove($attempt);
             }
-            
+
             $entityManager->remove($admin);
             $entityManager->flush();
 
@@ -69,4 +71,13 @@ class AdminController extends DashboardController
 
         return $this->redirectToRoute('app_admins');
     }
+
+    #[Route('/admin/login_logs', name: 'app_login_logs_json')]
+    public function getLoginLogsJSON(AdminGraph $adminGraph): JsonResponse
+    {
+        $data = $adminGraph->getData();
+
+        return $this->json($data);
+    }
+
 }
