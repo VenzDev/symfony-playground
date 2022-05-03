@@ -4,9 +4,9 @@
     <div class="position-absolute-centre">
         <form class="p-5 bg-white rounded shadow-sm" action="{{ path('app_login') }}" method="post">
             {% for message in app.flashes('success') %}
-            <div class="alert alert-success">
-                {{ message }}
-            </div>
+                <div class="alert alert-success">
+                    {{ message }}
+                </div>
             {% endfor %}
 
             {% if error %}

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\AdminRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -28,6 +30,22 @@ class Admin implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string')]
     private $password;
 
+    #[ORM\OneToMany(mappedBy: 'userAdmin', targetEntity: LoginAttempt::class)]
+    private $loginAttempts;
+
+    #[ORM\Column(type: 'boolean')]
+    private $isVerified = false;
+
+    #[ORM\Column(type: 'boolean')]
+    private $isBlocked = false;
+
+    private ?LoginAttempt $lastLoginAttempt;
+
+    public function __construct()
+    {
+        $this->loginAttempts = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -52,7 +70,7 @@ class Admin implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
 
     /**
@@ -60,7 +78,7 @@ class Admin implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUsername(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
 
     /**
@@ -115,5 +133,75 @@ class Admin implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return Collection<int, LoginAttempt>
+     */
+    public function getLoginAttempts(): Collection
+    {
+        return $this->loginAttempts;
+    }
+
+    public function addLoginAttempt(LoginAttempt $loginAttempt): self
+    {
+        if (!$this->loginAttempts->contains($loginAttempt)) {
+            $this->loginAttempts[] = $loginAttempt;
+            $loginAttempt->setUserAdmin($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLoginAttempt(LoginAttempt $loginAttempt): self
+    {
+        if ($this->loginAttempts->removeElement($loginAttempt)) {
+            // set the owning side to null (unless already changed)
+            if ($loginAttempt->getUserAdmin() === $this) {
+                $loginAttempt->setUserAdmin(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return LoginAttempt|null
+     */
+    public function getLastLoginAttempt(): ?LoginAttempt
+    {
+        return $this->lastLoginAttempt;
+    }
+
+    /**
+     * @param LoginAttempt $lastLoginAttempt
+     */
+    public function setLastLoginAttempt(LoginAttempt $lastLoginAttempt): void
+    {
+        $this->lastLoginAttempt = $lastLoginAttempt;
+    }
+
+    public function getIsVerified(): ?bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): self
+    {
+        $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function getIsBlocked(): ?bool
+    {
+        return $this->isBlocked;
+    }
+
+    public function setIsBlocked(bool $isBlocked): self
+    {
+        $this->isBlocked = $isBlocked;
+
+        return $this;
     }
 }

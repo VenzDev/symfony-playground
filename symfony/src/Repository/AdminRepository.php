@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Admin;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -64,32 +65,16 @@ class AdminRepository extends ServiceEntityRepository implements PasswordUpgrade
         $this->_em->flush();
     }
 
-    // /**
-    //  * @return Admin[] Returns an array of Admin objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return Admin[]
+     */
+    public function getAdminsWithoutRoot()
     {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('a.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $b = $this->createQueryBuilder('admin');
 
-    /*
-    public function findOneBySomeField($value): ?Admin
-    {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
+        return $b->andWhere('admin.roles LIKE :role')
+            ->setParameter('role', '%ROLE_ADMIN%')
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getResult();
     }
-    */
 }

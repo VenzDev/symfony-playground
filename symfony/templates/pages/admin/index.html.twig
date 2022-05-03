@@ -1,7 +1,110 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <main class="row overflow-auto">
-        <div>admin template</div>
+    <main class="overflow-auto m-3">
+        <div class="container p-2 my-3">
+            <h4>Manage Admins</h4>
+            <div class="row my-2">
+                <div class="col">
+                    <button class="btn btn-outline-primary mx-1"><i class="bi bi-shield-plus"></i> Add Admin</button>
+                    <button class="btn btn-outline-primary mx-1"><i class="bi bi-calendar"></i> Clear login logs
+                    </button>
+                </div>
+            </div>
+            <div class="row gx-5 text-white">
+                <div class="col-sm-6 col-md-3">
+                    <div class="py-2 px-3 border bg-primary rounded-3 shadow">
+                        <i class="bi bi-shield"></i>
+                        <span class="fw-light">Summary</span>
+                        <p class="fw-bold fs-3">{{ adminsCount }}</p>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-3">
+                    <div class="py-2 px-3 border bg-primary rounded-3 shadow">
+                        <i class="bi bi-x-circle"></i>
+                        <span class="fw-light">Unverified</span>
+                        <p class="fw-bold fs-3">{{ unverifiedCount }}</p>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-3">
+                    <div class="py-2 px-3 border bg-primary rounded-3 shadow">
+                        <i class="bi bi-stop-circle"></i>
+                        <span class="fw-light">Blocked</span>
+                        <p class="fw-bold fs-3">{{ blockedCount }}</p>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-3">
+                    <div class="py-2 px-3 border bg-primary rounded-3 shadow">
+                        <i class="bi bi-play-circle"></i>
+                        <span class="fw-light">Online Today</span>
+                        <p class="fw-bold fs-3">{{ onlineCount }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container p-2 mb-4">
+            <div class="p-5 bg-white rounded shadow">
+                <table id="example" class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Email</th>
+                        <th>Is Blocked</th>
+                        <th>Is Verified</th>
+                        <th>Last Login</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for admin in admins %}
+                        <tr>
+                            <td>{{ admin.id }}</td>
+                            <td>{{ admin.email }}</td>
+                            <td>{{ admin.isBlocked|yesNo }}</td>
+                            <td>{{ admin.isVerified|yesNo }}</td>
+                            <td>{{ admin.getLastLoginAttempt.date|date }}</td>
+                            <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-primary dropdown-toggle" type="button"
+                                            id="adminSettingsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-gear mx-2"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-dark text-small shadow"
+                                        aria-labelledby="adminSettingsDropdown">
+                                        <li><a class="dropdown-item" href="#">Reset Password</a></li>
+                                        {% if admin.isBlocked %}
+                                            <li><a class="dropdown-item"
+                                                   href="{{ path('app_admins_block', {'id': admin.id, 'value': 0}) }}">Unblock</a>
+                                            </li>
+                                        {% else %}
+                                            <li><a class="dropdown-item"
+                                                   href="{{ path('app_admins_block', {'id': admin.id, 'value': 1}) }}">Block</a>
+                                            </li>
+                                        {% endif %}
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li><a class="dropdown-item"
+                                               href="{{ path('app_admins_remove', {'id': admin.id}) }}">Remove
+                                                admin</a></li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="container px-2 py-4">
+            <div class="p-5 bg-white rounded shadow">
+                <canvas id="lastLoginChart"></canvas>
+            </div>
+        </div>
     </main>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('admin') }}
 {% endblock %}

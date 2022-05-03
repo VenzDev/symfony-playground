@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Admin;
+use App\Entity\LoginAttempt;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -29,6 +30,39 @@ class AdminFixtures extends Fixture
         $superAdmin->setPassword($password);
 
         $manager->persist($superAdmin);
+
+        $admin = new Admin();
+
+        $admin->setEmail('email@gmail.com');
+        $admin->setRoles(['ROLE_ADMIN']);
+
+        $password = $this->passwordHasher->hashPassword($superAdmin, 'Zaq12wsxcde3!');
+        $admin->setPassword($password);
+
+        $loginAttempt = new LoginAttempt();
+
+        $loginAttempt->setUserAdmin($admin);
+        $loginAttempt->setDate(new \DateTime());
+
+        $admin2 = new Admin();
+
+        $admin2->setEmail('email1@gmail.com');
+        $admin2->setRoles(['ROLE_ADMIN']);
+
+        $password = $this->passwordHasher->hashPassword($superAdmin, 'Zaq12wsxcde3!');
+        $admin2->setPassword($password);
+
+        $loginAttempt2 = new LoginAttempt();
+
+        $loginAttempt2->setUserAdmin($admin2);
+        $loginAttempt2->setDate(new \DateTime());
+
+        $manager->persist($admin);
+        $manager->persist($loginAttempt);
+        $manager->persist($admin2);
+        $manager->persist($loginAttempt2);
+
         $manager->flush();
     }
+
 }

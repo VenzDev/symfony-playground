@@ -4,11 +4,15 @@ namespace App\Controller\Admin\Pages;
 
 use App\Dashboard\Sidebar\Sidebar;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Routing\Annotation\Route;
 
 abstract class DashboardController extends AbstractController
 {
     private Sidebar $sidebar;
+
     public function __construct(Sidebar $sidebar)
     {
         $this->sidebar = $sidebar;
@@ -21,5 +25,14 @@ abstract class DashboardController extends AbstractController
         $parameters['__sidebar'] = $this->sidebar->get();
 
         return parent::render($view, $parameters, $response);
+    }
+
+    #[Route('/flashes', name: 'app_flashes')]
+    public function getFlashesJSON(Session $session): JsonResponse
+    {
+        $success = $session->getFlashBag()->get('success');
+        $error = $session->getFlashBag()->get('error');
+
+        return $this->json(['success' => $success, 'error' => $error]);
     }
 }
