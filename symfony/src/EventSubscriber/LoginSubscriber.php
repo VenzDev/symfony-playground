@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Http\Authenticator\Debug\TraceableAuthenticator;
 use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
 
 class LoginSubscriber implements EventSubscriberInterface
@@ -26,8 +27,12 @@ class LoginSubscriber implements EventSubscriberInterface
     }
 
 
-    public function onSuccessLogin()
+    public function onSuccessLogin(LoginSuccessEvent $event)
     {
+        if ($event->getFirewallName() !== 'main') {
+            return;
+        }
+
         /** @var Admin $user */
         $user = $this->security->getUser();
 
