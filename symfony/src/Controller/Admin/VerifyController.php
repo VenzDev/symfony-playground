@@ -2,8 +2,8 @@
 
 namespace App\Controller\Admin;
 
+use App\Message\MailMessage;
 use App\Repository\AdminRepository;
-use App\Service\MailerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,7 +28,7 @@ class VerifyController extends AbstractController
         AdminRepository $adminRepository,
         UserPasswordHasherInterface $passwordHasher,
         EntityManagerInterface $entityManager,
-        MailerService $mailerService
+        MailMessage $mailMessage
     ): Response {
         $id = $request->request->get('id');
         $token = $request->request->get('token');
@@ -47,7 +47,7 @@ class VerifyController extends AbstractController
                 throw new \Exception('Invalid verification link.');
             }
 
-            if (!$mailerService->validateToken($admin, $token)) {
+            if (!$mailMessage->validateToken($admin, $token)) {
                 throw new \Exception('Invalid token.');
             }
 

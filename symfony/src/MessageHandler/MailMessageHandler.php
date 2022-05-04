@@ -1,38 +1,39 @@
 <?php
 
-namespace App\Service;
+namespace App\MessageHandler;
 
 use App\Entity\Admin;
+use App\Message\MailMessage;
 use Symfony\Component\HttpFoundation\UrlHelper;
-use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\RouterInterface;
 
-class MailerService
+#[AsMessageHandler]
+class MailMessageHandler
 {
     private string $routeName = 'app_admin_verify';
     private string $from = 'carparkersender@gmail.com';
 
-    private RouterInterface $router;
-    private UrlHelper $urlHelper;
     private MailerInterface $mailer;
+    private UrlHelper $urlHelper;
+    private RouterInterface $router;
     private Email $email;
 
     public function __construct(MailerInterface $mailer, UrlHelper $urlHelper, RouterInterface $router)
     {
-        $this->router = $router;
-        $this->urlHelper = $urlHelper;
         $this->mailer = $mailer;
+        $this->urlHelper = $urlHelper;
+        $this->router = $router;
         $this->email = new Email();
         $this->email->from($this->from);
     }
 
-    /**
-     * @throws TransportExceptionInterface
-     */
-    public function sendResetPasswordEmail(Admin $admin)
+    public function __invoke(MailMessage $message)
     {
+        $admin = $message->getAdmin();
+
         $this->email->to($admin->getEmail());
         $this->email->subject('Reset Password');
         $this->email->text("Click below to reset password:");
@@ -44,9 +45,11 @@ class MailerService
         $this->mailer->send($this->email);
     }
 
-    public function validateToken(Admin $admin, string $hash): bool
+    private function generateUrl(string $token, Admin $admin): string
     {
-        return password_verify($admin->getEmail(), $hash);
+        $route = $this->router->getRouteCollection()->get($this->routeName);
+
+        return $this->urlHelper->getAbsoluteUrl($route->getPath().'?token='.$token.'&id='.$admin->getId());
     }
 
     /**
@@ -56,13 +59,5 @@ class MailerService
     private function generateToken(Admin $admin): string
     {
         return password_hash($admin->getEmail(), PASSWORD_BCRYPT);
-    }
-
-
-    private function generateUrl(string $token, Admin $admin): string
-    {
-        $route = $this->router->getRouteCollection()->get($this->routeName);
-
-        return $this->urlHelper->getAbsoluteUrl($route->getPath().'?token='.$token.'&id='.$admin->getId());
     }
 }

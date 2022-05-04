@@ -2,26 +2,23 @@
 
 namespace App\Controller\Admin\Pages;
 
-use App\Message\SmsNotification;
+use Exception;
+use App\Message\MailMessage;
 use App\Repository\AdminRepository;
 use App\Repository\LoginAttemptRepository;
 use App\Resources\AdminGraph;
 use App\Resources\AdminResources;
-use App\Service\MailerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class AdminController extends DashboardController
 {
     #[Route('/admin/manageAdmins', name: 'app_admins')]
-    public function index(AdminResources $adminResources, MessageBusInterface $bus): Response
+    public function index(AdminResources $adminResources): Response
     {
-        $bus->dispatch(new SmsNotification('Content'));
-
         return $this->render(
             'pages/admin/index.html.twig',
             [
@@ -79,25 +76,28 @@ class AdminController extends DashboardController
     }
 
     #[Route('/admin/resetPassword/{id}', name: 'app_reset_password')]
-    public function resetPassword(int $id, MailerService $mailerService, AdminRepository $adminRepository): Response
+    public function resetPassword(int $id, AdminRepository $adminRepository, MessageBusInterface $bus): Response
     {
         $admin = $adminRepository->find($id);
 
         try {
             if (!$admin) {
-                throw new \Exception('Admin not found.');
+                throw new Exception('Admin not found.');
             }
 
-            $mailerService->sendResetPasswordEmail($admin);
+            $message = new MailMessage($admin);
+
+            $bus->dispatch($message);
 
             $this->addFlash('success', 'Email successfully sent.');
-        } catch (\Exception|TransportExceptionInterface $e) {
+        } catch (Exception $e) {
             $this->addFlash('error', $e->getMessage());
         }
 
         return $this->redirectToRoute('app_admins');
     }
 
+    /** @noinspection PhpUnused */
     #[Route('/admin/login_logs', name: 'app_login_logs_json')]
     public function getLoginLogsJSON(AdminGraph $adminGraph): JsonResponse
     {
