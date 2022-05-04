@@ -6,15 +6,17 @@ use App\Repository\AdminRepository;
 use App\Repository\LoginAttemptRepository;
 use App\Resources\AdminGraph;
 use App\Resources\AdminResources;
+use App\Service\MailerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class AdminController extends DashboardController
 {
     #[Route('/admin/manageAdmins', name: 'app_admins')]
-    public function index(AdminRepository $adminRepository, AdminResources $adminResources): Response
+    public function index(AdminResources $adminResources): Response
     {
         return $this->render(
             'pages/admin/index.html.twig',
@@ -67,6 +69,26 @@ class AdminController extends DashboardController
             $this->addFlash('success', 'Admin deleted successfully.');
         } else {
             $this->addFlash('error', 'Admin not found.');
+        }
+
+        return $this->redirectToRoute('app_admins');
+    }
+
+    #[Route('/admin/resetPassword/{id}', name: 'app_reset_password')]
+    public function resetPassword(int $id, MailerService $mailerService, AdminRepository $adminRepository): Response
+    {
+        $admin = $adminRepository->find($id);
+
+        try {
+            if (!$admin) {
+                throw new \Exception('Admin not found.');
+            }
+
+            $mailerService->sendResetPasswordEmail($admin);
+
+            $this->addFlash('success', 'Email successfully sent.');
+        } catch (\Exception|TransportExceptionInterface $e) {
+            $this->addFlash('error', $e->getMessage());
         }
 
         return $this->redirectToRoute('app_admins');

@@ -73,7 +73,9 @@
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-dark text-small shadow"
                                         aria-labelledby="adminSettingsDropdown">
-                                        <li><a class="dropdown-item" href="#">Reset Password</a></li>
+                                        <li><a class="dropdown-item"
+                                               href="{{ path('app_reset_password', {'id': admin.id}) }}">Reset
+                                                Password</a></li>
                                         {% if admin.isBlocked %}
                                             <li><a class="dropdown-item"
                                                    href="{{ path('app_admins_block', {'id': admin.id, 'value': 0}) }}">Unblock</a>

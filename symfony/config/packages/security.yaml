@@ -1,6 +1,6 @@
 security:
   role_hierarchy:
-    ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+    ROLE_SUPER_ADMIN: [ ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH ]
 
   enable_authenticator_manager: true
 
@@ -53,6 +53,7 @@ security:
   access_control:
     - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
+    - { path: ^/admin/verify, roles: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/admin/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/admin,     roles: ROLE_ADMIN }
 when@test:
