@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin\Pages;
 
+use App\Message\SmsNotification;
 use App\Repository\AdminRepository;
 use App\Repository\LoginAttemptRepository;
 use App\Resources\AdminGraph;
@@ -11,13 +12,16 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class AdminController extends DashboardController
 {
     #[Route('/admin/manageAdmins', name: 'app_admins')]
-    public function index(AdminResources $adminResources): Response
+    public function index(AdminResources $adminResources, MessageBusInterface $bus): Response
     {
+        $bus->dispatch(new SmsNotification('Content'));
+
         return $this->render(
             'pages/admin/index.html.twig',
             [
