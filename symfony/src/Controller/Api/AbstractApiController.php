@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\SerializerInterface;
 
-class AbstractApiController extends AbstractController
+abstract class AbstractApiController extends AbstractController
 {
     private string $format = 'json';
     private string $contentType = 'application/json';
@@ -34,5 +34,10 @@ class AbstractApiController extends AbstractController
     public function response(string $data, int $code = 200): Response
     {
         return new Response($data, $code, ['Content-Type' => $this->contentType]);
+    }
+
+    public function error(string $message, int $code = 422): Response
+    {
+        return new Response($this->serialize(['status' => 'error', 'message' => $message]), $code, ['Content-Type' => $this->contentType]);
     }
 }
