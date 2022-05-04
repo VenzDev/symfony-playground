@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Dashboard\Sidebar;
+declare(strict_types=1);
 
+namespace App\Dashboard\Sidebar;
 
 use App\Controller\Admin\Pages\AdminController;
 use App\Controller\Admin\Pages\HomeController;
@@ -27,7 +28,7 @@ class Sidebar
 
         $this->sidebarItems[] = $item;
 
-        if(in_array(Admin::ROLE_SUPER_ADMIN, $user->getRoles())) {
+        if (in_array(Admin::ROLE_SUPER_ADMIN, $user->getRoles())) {
             $item = new SidebarItem();
             $item->setTitle('Manage Admins');
             $item->setIcon('bi bi-shield-fill');
@@ -37,7 +38,6 @@ class Sidebar
 
             $this->sidebarItems[] = $item;
         }
-
     }
 
     /**
@@ -57,11 +57,10 @@ class Sidebar
      */
     public function setActiveSidebar(string $className): bool
     {
-        foreach ($this->sidebarItems as $item)
-        {
+        foreach ($this->sidebarItems as $item) {
             $item->setIsActive(false);
 
-            if($item->getController() === $className) {
+            if ($item->getController() === $className) {
                 $item->setIsActive(true);
             }
         }
@@ -74,7 +73,7 @@ class Sidebar
      */
     private function order(): bool
     {
-        return usort($this->sidebarItems, function(SidebarItem $a, SidebarItem $b) {
+        return usort($this->sidebarItems, function (SidebarItem $a, SidebarItem $b) {
             return $a->getOrder() > $b->getOrder();
         });
     }

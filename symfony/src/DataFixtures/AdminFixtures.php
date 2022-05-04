@@ -1,24 +1,48 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\DataFixtures;
 
 use App\Entity\Admin;
 use App\Entity\LoginAttempt;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Faker\Factory;
+use Faker\Generator;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AdminFixtures extends Fixture
 {
+    protected Generator $faker;
+
+    private int $adminCount = 20;
 
     private UserPasswordHasherInterface $passwordHasher;
 
+
     public function __construct(UserPasswordHasherInterface $passwordHasher)
     {
+        $this->faker = Factory::create();
         $this->passwordHasher = $passwordHasher;
     }
 
     public function load(ObjectManager $manager)
+    {
+        $manager->persist($this->createSuperAdmin());
+
+        for ($i = 0; $i < $this->adminCount; $i++) {
+            $admin = $this->createAdmin();
+            $loginAttempt = $this->createLoginAttempt($admin);
+
+            $manager->persist($admin);
+            $manager->persist($loginAttempt);
+        }
+
+        $manager->flush();
+    }
+
+    private function createSuperAdmin(): Admin
     {
         $superAdmin = new Admin();
 
@@ -30,42 +54,42 @@ class AdminFixtures extends Fixture
 
         $superAdmin->setPassword($password);
 
-        $manager->persist($superAdmin);
+        return $superAdmin;
+    }
 
-        $admin = new Admin();
+    /**
+     * @return Admin
+     */
+    private function createAdmin(): Admin
+    {
+        $superAdmin = new Admin();
 
-        $admin->setName('John');
-        $admin->setEmail('kamil.bechta1@gmail.com');
-        $admin->setRoles(['ROLE_ADMIN']);
+        $superAdmin->setName($this->faker->name);
+        $superAdmin->setEmail($this->faker->email);
+        $superAdmin->setRoles(['ROLE_ADMIN']);
 
         $password = $this->passwordHasher->hashPassword($superAdmin, 'Zaq12wsxcde3!');
-        $admin->setPassword($password);
 
+        $superAdmin->setPassword($password);
+
+        return $superAdmin;
+    }
+
+    /**
+     * @param Admin $admin
+     *
+     * @return LoginAttempt
+     */
+    private function createLoginAttempt(Admin $admin): LoginAttempt
+    {
         $loginAttempt = new LoginAttempt();
 
+        $randomNumber = $this->faker->randomDigit;
+
         $loginAttempt->setUserAdmin($admin);
-        $loginAttempt->setDate((new \DateTime())->modify('-1 day'));
+        $loginAttempt->setDate((new \DateTime())->modify("-$randomNumber day"));
 
-        $admin2 = new Admin();
-
-        $admin2->setName('Michael');
-        $admin2->setEmail('email1@gmail.com');
-        $admin2->setRoles(['ROLE_ADMIN']);
-
-        $password = $this->passwordHasher->hashPassword($superAdmin, 'Zaq12wsxcde3!');
-        $admin2->setPassword($password);
-
-        $loginAttempt2 = new LoginAttempt();
-
-        $loginAttempt2->setUserAdmin($admin2);
-        $loginAttempt2->setDate(new \DateTime());
-
-        $manager->persist($admin);
-        $manager->persist($loginAttempt);
-        $manager->persist($admin2);
-        $manager->persist($loginAttempt2);
-
-        $manager->flush();
+        return $loginAttempt;
     }
 
 }

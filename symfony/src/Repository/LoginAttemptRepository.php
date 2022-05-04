@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\Admin;
 use App\Entity\LoginAttempt;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -52,7 +53,7 @@ class LoginAttemptRepository extends ServiceEntityRepository
     /**
      * @return LoginAttempt[]
      */
-    public function getLastLoginAttemptForEachAdmin()
+    public function getLastLoginAttemptForEachAdmin(): array
     {
         return $this->createQueryBuilder('lastAttempt')
             ->select('lastAttempt')
@@ -61,7 +62,12 @@ class LoginAttemptRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function getLoginAttemptsByAdmin(Admin $admin)
+    /**
+     * @param Admin $admin
+     *
+     * @return LoginAttempt[]
+     */
+    public function getLoginAttemptsByAdmin(Admin $admin): array
     {
         return $this->createQueryBuilder('lastAttempt')
             ->andWhere('lastAttempt.userAdmin = :admin')

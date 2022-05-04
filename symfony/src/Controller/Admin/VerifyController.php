@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Admin;
 
 use App\Message\MailMessage;
@@ -13,6 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class VerifyController extends AbstractController
 {
+    /** @noinspection PhpUnused */
     #[Route('/admin/verify', name: 'app_admin_verify')]
     public function verifyAdmin(Request $request): Response
     {

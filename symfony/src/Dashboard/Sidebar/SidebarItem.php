@@ -1,27 +1,28 @@
 <?php
 
-namespace App\Dashboard\SidebarItem;
+declare(strict_types=1);
 
+namespace App\Dashboard\SidebarItem;
 
 class SidebarItem
 {
-   private string $title;
-   private string $icon;
-   private string $controller;
-   private string $path;
-   private int $order;
-   private bool $isActive;
+    private string $title;
+    private string $icon;
+    private string $controller;
+    private string $path;
+    private int $order;
+    private bool $isActive;
 
 
-   public function __construct()
-   {
-       $this->title = 'change me';
-       $this->icon = 'fa fa-trash';
-       $this->controller = '';
-       $this->path = '';
-       $this->order = 0;
-       $this->isActive = false;
-   }
+    public function __construct()
+    {
+        $this->title = 'change me';
+        $this->icon = 'fa fa-trash';
+        $this->controller = '';
+        $this->path = '';
+        $this->order = 0;
+        $this->isActive = false;
+    }
 
     /**
      * @return string

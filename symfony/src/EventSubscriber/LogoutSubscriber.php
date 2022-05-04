@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\EventSubscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -15,7 +17,6 @@ class LogoutSubscriber implements EventSubscriberInterface
         $this->session = new Session();
     }
 
-
     public function onLogout()
     {
         $this->session->getFlashBag()->add('success', 'Logout Success');
@@ -23,7 +24,7 @@ class LogoutSubscriber implements EventSubscriberInterface
 
     public static function getSubscribedEvents(): array
     {
-        return [ LogoutEvent::class => 'onLogout'];
+        return [LogoutEvent::class => 'onLogout'];
     }
 
 }

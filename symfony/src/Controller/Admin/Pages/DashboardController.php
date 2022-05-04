@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Admin\Pages;
 
 use App\Dashboard\Sidebar\Sidebar;
@@ -27,6 +29,7 @@ abstract class DashboardController extends AbstractController
         return parent::render($view, $parameters, $response);
     }
 
+    /** @noinspection PhpUnused */
     #[Route('/flashes', name: 'app_flashes')]
     public function getFlashesJSON(Session $session): JsonResponse
     {

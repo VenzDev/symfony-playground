@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Admin;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,7 +14,7 @@ class LoginController extends AbstractController
     #[Route('/admin/login', name: 'app_login')]
     public function index(AuthenticationUtils $authenticationUtils): Response
     {
-        if($this->isGranted('IS_AUTHENTICATED_FULLY')) {
+        if ($this->isGranted('IS_AUTHENTICATED_FULLY')) {
             return $this->redirectToRoute('app_home');
         }
 
