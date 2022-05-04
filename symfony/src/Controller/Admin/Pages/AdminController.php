@@ -9,7 +9,6 @@ use App\Resources\AdminResources;
 use App\Service\MailerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -94,7 +93,7 @@ class AdminController extends DashboardController
 
         return $this->redirectToRoute('app_admins');
     }
-    
+
     #[Route('/admin/login_logs', name: 'app_login_logs_json')]
     public function getLoginLogsJSON(AdminGraph $adminGraph): JsonResponse
     {
