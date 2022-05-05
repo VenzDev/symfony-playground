@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Dashboard\SidebarItem;
+namespace App\Dashboard\Sidebar;
 
 class SidebarItem
 {

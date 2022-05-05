@@ -6,7 +6,6 @@ namespace App\Dashboard\Sidebar;
 
 use App\Controller\Admin\Pages\AdminController;
 use App\Controller\Admin\Pages\HomeController;
-use App\Dashboard\SidebarItem\SidebarItem;
 use App\Entity\Admin;
 use Symfony\Component\Security\Core\Security;
 
