@@ -22,7 +22,7 @@ class AdminGraph
         $labels = [];
         $data = [];
 
-        $daysAgo = 30;
+        $daysAgo = 29;
 
         while ($daysAgo >= 0) {
             $date = (new \DateTime())->modify("-$daysAgo day");
