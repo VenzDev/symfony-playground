@@ -55,6 +55,7 @@ security:
     - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
     - { path: ^/admin/verify, roles: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/admin/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/admin/manageAdmins, roles: ROLE_SUPER_ADMIN }
     - { path: ^/admin,     roles: ROLE_ADMIN }
 when@test:
   security:
