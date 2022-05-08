@@ -10,7 +10,11 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 #[ORM\Entity(repositoryClass: ServiceRepository::class)]
 class Service
 {
-    const AVAILABLE_STATUSES = ['pending', 'active', 'suspended'];
+    const STATUS_PENDING = 'pending';
+    const STATUS_ACTIVE = 'active';
+    const STATUS_SUSPENDED = 'suspended';
+
+    const AVAILABLE_STATUSES = [self::STATUS_ACTIVE, self::STATUS_PENDING, self::STATUS_SUSPENDED];
 
     #[ORM\Id]
     #[ORM\GeneratedValue]

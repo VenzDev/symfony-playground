@@ -51,11 +51,11 @@ class ServiceRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param UserInterface $user
+     * @param User $user
      *
      * @return QueryBuilder
      */
-    private function getByUserQuery(UserInterface $user): QueryBuilder
+    private function getByUserQuery(User $user): QueryBuilder
     {
         return $this->createQueryBuilder('s')
             ->andWhere('s.owner = :user')
@@ -63,18 +63,18 @@ class ServiceRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param UserInterface $user
+     * @param User $user
      *
      * @return Service[]
      */
-    public function getByUser(UserInterface $user): array
+    public function getByUser(User $user): array
     {
         return $this->getByUserQuery($user)
             ->getQuery()
             ->getResult();
     }
 
-    public function getByUserAndId(UserInterface $user, int $id): ?Service
+    public function getByUserAndId(User $user, int $id): ?Service
     {
         return $this->getByUserQuery($user)
             ->andWhere('s.id = :id')
