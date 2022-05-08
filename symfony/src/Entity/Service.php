@@ -4,24 +4,34 @@ namespace App\Entity;
 
 use App\Repository\ServiceRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints\Choice;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[ORM\Entity(repositoryClass: ServiceRepository::class)]
 class Service
 {
+    const AVAILABLE_STATUSES = ['pending', 'active', 'suspended'];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[NotBlank]
     private $name;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Choice(choices: self::AVAILABLE_STATUSES)]
     private $status;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'services')]
     #[ORM\JoinColumn(nullable: false)]
     private $owner;
+
+    #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: 'services')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $product;
 
     public function getId(): ?int
     {
@@ -60,6 +70,18 @@ class Service
     public function setOwner(?User $owner): self
     {
         $this->owner = $owner;
+
+        return $this;
+    }
+
+    public function getProduct(): ?Product
+    {
+        return $this->product;
+    }
+
+    public function setProduct(?Product $product): self
+    {
+        $this->product = $product;
 
         return $this;
     }

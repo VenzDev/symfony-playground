@@ -3,10 +3,13 @@
 namespace App\Repository;
 
 use App\Entity\Service;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @extends ServiceEntityRepository<Service>
@@ -47,32 +50,36 @@ class ServiceRepository extends ServiceEntityRepository
         }
     }
 
-    // /**
-    //  * @return Service[] Returns an array of Service objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param UserInterface $user
+     *
+     * @return QueryBuilder
+     */
+    private function getByUserQuery(UserInterface $user): QueryBuilder
     {
         return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('s.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+            ->andWhere('s.owner = :user')
+            ->setParameter('user', $user);
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Service
+    /**
+     * @param UserInterface $user
+     *
+     * @return Service[]
+     */
+    public function getByUser(UserInterface $user): array
     {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
+        return $this->getByUserQuery($user)
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getResult();
     }
-    */
+
+    public function getByUserAndId(UserInterface $user, int $id): ?Service
+    {
+        return $this->getByUserQuery($user)
+            ->andWhere('s.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }
