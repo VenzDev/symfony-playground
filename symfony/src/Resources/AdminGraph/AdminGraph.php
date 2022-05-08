@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Resources;
+namespace App\Resources\AdminGraph;
 
 use App\Repository\LoginAttemptRepository;
 
-class AdminGraph
+class AdminGraph implements AdminGraphInterface
 {
     private LoginAttemptRepository $loginAttemptRepository;
 
@@ -38,7 +38,7 @@ class AdminGraph
         return ['labels' => $labels, 'data' => $data];
     }
 
-    private function getLoginInDay($data, \DateTime $date): int
+    private function getLoginInDay(array $data, \DateTimeInterface $date): int
     {
         $dateStart = clone $date;
         $dateStart->setTime(0, 0, 0);

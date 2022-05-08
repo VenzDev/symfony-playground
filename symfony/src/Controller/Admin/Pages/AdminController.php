@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin\Pages;
 
+use App\Resources\AdminGraph\AdminGraphInterface;
 use Exception;
 use App\Message\MailMessage;
 use App\Repository\AdminRepository;
 use App\Repository\LoginAttemptRepository;
-use App\Resources\AdminGraph;
-use App\Resources\AdminResources;
+use App\Resources\AdminResources\AdminResourcesInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,8 +19,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class AdminController extends DashboardController
 {
     #[Route('/admin/manageAdmins', name: 'app_admins')]
-    public function index(AdminResources $adminResources): Response
+    public function index(AdminResourcesInterface $adminResources): Response
     {
+        dd($adminResources);
+
         return $this->render(
             'pages/admin/index.html.twig',
             [
@@ -101,7 +103,7 @@ class AdminController extends DashboardController
 
     /** @noinspection PhpUnused */
     #[Route('/admin/login_logs', name: 'app_login_logs_json')]
-    public function getLoginLogsJSON(AdminGraph $adminGraph): JsonResponse
+    public function getLoginLogsJSON(AdminGraphInterface $adminGraph): JsonResponse
     {
         $data = $adminGraph->getData();
 

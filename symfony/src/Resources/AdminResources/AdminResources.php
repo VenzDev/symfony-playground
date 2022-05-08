@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Resources;
+namespace App\Resources\AdminResources;
 
 use App\Entity\Admin;
 use App\Entity\LoginAttempt;
 use App\Repository\AdminRepository;
 use App\Repository\LoginAttemptRepository;
 
-class AdminResources
+class AdminResources implements AdminResourcesInterface
 {
     private AdminRepository $adminRepository;
     private LoginAttemptRepository $loginAttemptRepository;

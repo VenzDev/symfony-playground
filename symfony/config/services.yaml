@@ -6,6 +6,8 @@
 parameters:
 
 services:
+
+
   _defaults:
     autowire: true      # Automatically injects dependencies in your services.
     autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
@@ -18,3 +20,9 @@ services:
       - '../src/DependencyInjection/'
       - '../src/Entity/'
       - '../src/Kernel.php'
+
+  App\Resources\AdminResources\AdminResources: ~
+  App\Resources\AdminResources\AdminResourcesNew: ~
+
+  App\Resources\AdminResources\AdminResourcesInterface $updatedResources: '@App\Resources\AdminResources\AdminResourcesNew'
+  App\Resources\AdminResources\AdminResourcesInterface: '@App\Resources\AdminResources\AdminResources'

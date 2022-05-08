@@ -36,8 +36,8 @@ abstract class AbstractApiController extends AbstractController
         return new Response($data, $code, ['Content-Type' => $this->contentType]);
     }
 
-    public function error(string $message, int $code = 422): Response
+    public function error(mixed $message, int $code = 422): Response
     {
-        return new Response($this->serialize(['status' => 'error', 'message' => $message]), $code, ['Content-Type' => $this->contentType]);
+        return new Response($this->serialize(['status' => 'error', 'result' => $message]), $code, ['Content-Type' => $this->contentType]);
     }
 }

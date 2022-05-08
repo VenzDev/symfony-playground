@@ -5,7 +5,6 @@ namespace App\Tests\Controller;
 use App\Entity\Admin;
 use App\Factory\AdminFactory;
 use Doctrine\Persistence\ObjectManager;
-use http\Client;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 

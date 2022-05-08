@@ -12,9 +12,13 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+#[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -23,23 +27,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups('get_user')]
     private $id;
 
-    #[ORM\Column(type: 'string', length: 180, unique: true)]
+    #[ORM\Column(type: 'string', length: 100, unique: true)]
     #[Groups('get_user')]
+    #[NotBlank]
+    #[Email]
     private $email;
+
+    #[ORM\Column(type: 'string', length: 100, unique: true)]
+    #[NotBlank]
+    #[Groups('get_user')]
+    private $username;
+
+    #[ORM\Column(type: 'string')]
+    #[NotBlank]
+    #[Length(min: 8)]
+    private $password;
 
     #[ORM\Column(type: 'json')]
     private $roles = [];
 
-    #[ORM\Column(type: 'string')]
-    private $password;
-
-    #[ORM\Column(type: 'string', length: 255)]
-    private $name;
-
-    #[ORM\Column(type: 'boolean')]
-    private $isVerified = false;
-
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Service::class)]
+    #[Groups('get_user')]
     private $services;
 
     public function __construct()
@@ -64,22 +72,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
-    public function getUserIdentifier(): string
+    public function getUserIdentifier(): ?string
     {
-        return (string)$this->email;
+        return $this->username;
     }
 
-    /**
-     * @deprecated since Symfony 5.3, use getUserIdentifier instead
-     */
     public function getUsername(): string
     {
-        return (string)$this->email;
+        return $this->getUserIdentifier();
+    }
+
+    public function setUsername(string $username): void
+    {
+        $this->username = $username;
     }
 
     /**
@@ -144,18 +149,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function isVerified(): bool
-    {
-        return $this->isVerified;
-    }
-
-    public function setIsVerified(bool $isVerified): self
-    {
-        $this->isVerified = $isVerified;
 
         return $this;
     }
