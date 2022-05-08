@@ -21,8 +21,6 @@ class AdminController extends DashboardController
     #[Route('/admin/manageAdmins', name: 'app_admins')]
     public function index(AdminResourcesInterface $adminResources): Response
     {
-        dd($adminResources);
-
         return $this->render(
             'pages/admin/index.html.twig',
             [
