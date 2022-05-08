@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 abstract class AbstractApiController extends AbstractController
 {
@@ -15,10 +17,14 @@ abstract class AbstractApiController extends AbstractController
     private string $contentType = 'application/json';
 
     protected SerializerInterface $serializer;
+    protected ValidatorInterface $validator;
+    protected EntityManagerInterface $entityManager;
 
-    public function __construct(SerializerInterface $serializer)
+    public function __construct(SerializerInterface $serializer, ValidatorInterface $validator, EntityManagerInterface $entityManager)
     {
         $this->serializer = $serializer;
+        $this->validator = $validator;
+        $this->entityManager = $entityManager;
     }
 
     public function serialize(mixed $data, ?array $groups = []): string

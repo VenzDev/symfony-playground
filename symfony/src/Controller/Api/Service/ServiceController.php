@@ -7,15 +7,14 @@ namespace App\Controller\Api\Service;
 use App\Controller\Api\AbstractApiController;
 use App\Dto\CreateServiceDto;
 use App\Dto\ServiceControlDto;
+use App\Entity\Job;
 use App\Entity\Service;
 use App\Entity\User;
 use App\Repository\ProductRepository;
 use App\Repository\ServiceRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route("/api/v1/")]
 class ServiceController extends AbstractApiController
@@ -47,16 +46,12 @@ class ServiceController extends AbstractApiController
     }
 
     #[Route("services", name: "api_services_post", methods: ["POST"])]
-    public function createService(
-        Request $request,
-        ValidatorInterface $validator,
-        ProductRepository $productRepository,
-        EntityManagerInterface $entityManager
-    ): Response {
+    public function createService(Request $request, ProductRepository $productRepository): Response
+    {
         /** @var CreateServiceDto $createService */
         $createService = $this->deserialize($request, CreateServiceDto::class);
 
-        $errors = $validator->validate($createService);
+        $errors = $this->validator->validate($createService);
 
         if (count($errors) > 0) {
             return $this->error($errors);
@@ -78,27 +73,40 @@ class ServiceController extends AbstractApiController
         $service->setStatus(Service::STATUS_PENDING);
         $service->setOwner($user);
 
-        $entityManager->persist($service);
-        $entityManager->flush();
+        $this->entityManager->persist($service);
+        $this->entityManager->flush();
 
         return $this->response($this->serialize($service), 201);
     }
 
     #[Route("services/{id}", name: "api_services_control", methods: ["PUT"])]
-    public function controlService(int $id, Request $request, ValidatorInterface $validator): Response
+    public function controlService(int $id, Request $request, ServiceRepository $serviceRepository): Response
     {
         /** @var ServiceControlDto $serviceControl */
         $serviceControl = $this->deserialize($request, ServiceControlDto::class);
 
-        $errors = $validator->validate($serviceControl);
+        $errors = $this->validator->validate($serviceControl);
 
         if (count($errors) > 0) {
             return $this->error($errors);
         }
 
-        //Message Bus - Create Job and return
+        $service = $serviceRepository->find($id);
 
-        return $this->response($this->serialize($serviceControl));
+        if (!$service) {
+            return $this->error('cannot find service');
+        }
+
+        $job = new Job();
+        $job->setDelay($serviceControl->getDelay() ?? 0);
+        $job->setServiceOption($serviceControl->getOption());
+        $job->setService($service);
+        $job->setCreatedAt(new \DateTimeImmutable());
+
+        $this->entityManager->persist($job);
+        $this->entityManager->flush();
+
+        return $this->response($this->serialize($job));
     }
 
 }
