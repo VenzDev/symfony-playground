@@ -10,10 +10,12 @@ use App\Dto\ServiceControlDto;
 use App\Entity\Job;
 use App\Entity\Service;
 use App\Entity\User;
+use App\Message\JobMessage;
 use App\Repository\ProductRepository;
 use App\Repository\ServiceRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/api/v1/")]
@@ -80,7 +82,7 @@ class ServiceController extends AbstractApiController
     }
 
     #[Route("services/{id}", name: "api_services_control", methods: ["PUT"])]
-    public function controlService(int $id, Request $request, ServiceRepository $serviceRepository): Response
+    public function controlService(int $id, Request $request, ServiceRepository $serviceRepository, MessageBusInterface $messageBus): Response
     {
         /** @var ServiceControlDto $serviceControl */
         $serviceControl = $this->deserialize($request, ServiceControlDto::class);
@@ -105,6 +107,8 @@ class ServiceController extends AbstractApiController
 
         $this->entityManager->persist($job);
         $this->entityManager->flush();
+
+        $messageBus->dispatch(new JobMessage($job));
 
         return $this->response($this->serialize($job));
     }

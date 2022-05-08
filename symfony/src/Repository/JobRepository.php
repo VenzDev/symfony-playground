@@ -3,9 +3,11 @@
 namespace App\Repository;
 
 use App\Entity\Job;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -47,32 +49,46 @@ class JobRepository extends ServiceEntityRepository
         }
     }
 
-    // /**
-    //  * @return Job[] Returns an array of Job objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    private function getByUserQuery(User $user): QueryBuilder
     {
         return $this->createQueryBuilder('j')
-            ->andWhere('j.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('j.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+            ->select('j')
+            ->innerJoin('j.service', 's')
+            ->andWhere('s.owner = :user')
+            ->setParameter('user', $user);
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Job
+    /**
+     * @param User $user
+     * @param int  $serviceId
+     *
+     * @return Job[]
+     */
+    public function getByUser(User $user, int $serviceId): array
     {
-        return $this->createQueryBuilder('j')
-            ->andWhere('j.exampleField = :val')
-            ->setParameter('val', $value)
+        return $this->getByUserQuery($user)
+            ->andWhere('s.id = :serviceId')
+            ->setParameter('serviceId', $serviceId)
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getResult();
     }
-    */
+
+    /**
+     * @param User $user
+     * @param int  $serviceId
+     * @param int  $id
+     *
+     * @return Job
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function getByUserAndId(User $user, int $serviceId, int $id): Job
+    {
+        return $this->getByUserQuery($user)
+            ->andWhere('s.id = :serviceId')
+            ->setParameter('serviceId', $serviceId)
+            ->andWhere('j.id = :jobId')
+            ->setParameter('jobId', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }
