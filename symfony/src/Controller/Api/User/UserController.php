@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/api/v1/users", name: "api_users_get", methods: "GET")]
-class GetUserController extends AbstractApiController
+class UserController extends AbstractApiController
 {
     public function __invoke(): Response
     {
