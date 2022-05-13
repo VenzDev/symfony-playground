@@ -52,7 +52,7 @@ class UserFixtures extends Fixture
     {
         $user = new User();
 
-        $user->setName($name ?: $this->faker->name);
+        $user->setUsername($name ?: $this->faker->name);
         $user->setEmail($email ?: $this->faker->email);
         $user->setRoles(['ROLE_USER']);
 

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin\Pages;
 
+use App\Entity\Admin;
+use App\Form\AdminType;
 use App\Resources\AdminGraph\AdminGraphInterface;
 use Exception;
 use App\Message\MailMessage;
@@ -21,9 +23,14 @@ class AdminController extends DashboardController
     #[Route('/admin/manageAdmins', name: 'app_admins')]
     public function index(AdminResourcesInterface $adminResources): Response
     {
+        $admin = new Admin();
+
+        $form = $this->createForm(AdminType::class, $admin);
+
         return $this->render(
             'pages/admin/index.html.twig',
             [
+                'form'            => $form->createView(),
                 'admins'          => $adminResources->getAdminWithLastAttempt(),
                 'adminsCount'     => $adminResources->getAdminCount(),
                 'unverifiedCount' => $adminResources->getUnverifiedCount(),
