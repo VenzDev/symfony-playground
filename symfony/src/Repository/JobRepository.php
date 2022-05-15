@@ -1,52 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\Job;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @extends ServiceEntityRepository<Job>
- *
- * @method Job|null find($id, $lockMode = null, $lockVersion = null)
- * @method Job|null findOneBy(array $criteria, array $orderBy = null)
- * @method Job[]    findAll()
- * @method Job[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- */
-class JobRepository extends ServiceEntityRepository
+class JobRepository extends ServiceEntityRepository implements JobRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Job::class);
-    }
-
-    /**
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
-    public function add(Job $entity, bool $flush = true): void
-    {
-        $this->_em->persist($entity);
-        if ($flush) {
-            $this->_em->flush();
-        }
-    }
-
-    /**
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
-    public function remove(Job $entity, bool $flush = true): void
-    {
-        $this->_em->remove($entity);
-        if ($flush) {
-            $this->_em->flush();
-        }
     }
 
     private function getByUserQuery(User $user): QueryBuilder
@@ -60,7 +29,7 @@ class JobRepository extends ServiceEntityRepository
 
     /**
      * @param User $user
-     * @param int  $serviceId
+     * @param int $serviceId
      *
      * @return Job[]
      */
@@ -75,13 +44,13 @@ class JobRepository extends ServiceEntityRepository
 
     /**
      * @param User $user
-     * @param int  $serviceId
-     * @param int  $id
+     * @param int $serviceId
+     * @param int $id
      *
-     * @return Job
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @return ?Job
+     * @throws NonUniqueResultException
      */
-    public function getByUserAndId(User $user, int $serviceId, int $id): Job
+    public function getByUserAndId(User $user, int $serviceId, int $id): ?Job
     {
         return $this->getByUserQuery($user)
             ->andWhere('s.id = :serviceId')

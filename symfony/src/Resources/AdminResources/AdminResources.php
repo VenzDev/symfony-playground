@@ -22,8 +22,11 @@ class AdminResources implements AdminResourcesInterface
     private int $blocked = 0;
     private int $onlineToday = 0;
 
-    public function __construct(LoginAttemptRepository $loginAttemptRepository, AdminRepository $adminRepository)
-    {
+    public function __construct(
+        array $params,
+        LoginAttemptRepository $loginAttemptRepository,
+        AdminRepository $adminRepository
+    ) {
         $this->adminRepository = $adminRepository;
         $this->loginAttemptRepository = $loginAttemptRepository;
 
@@ -98,7 +101,7 @@ class AdminResources implements AdminResourcesInterface
 
     /**
      * @param Array<LoginAttempt> $loginAttempts
-     * @param int                 $id
+     * @param int $id
      *
      * @return LoginAttempt|null
      */

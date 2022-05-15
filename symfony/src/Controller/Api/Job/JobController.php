@@ -6,7 +6,7 @@ namespace App\Controller\Api\Job;
 
 use App\Controller\Api\AbstractApiController;
 use App\Entity\User;
-use App\Repository\JobRepository;
+use App\Repository\JobRepositoryInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class JobController extends AbstractApiController
 {
     #[Route("{serviceId}/job/{jobId}", name: "api_jobs_get_one", methods: ["GET"])]
-    public function getJobOne(int $serviceId, int $jobId, JobRepository $jobRepository): Response
+    public function getJobOne(int $serviceId, int $jobId, JobRepositoryInterface $jobRepository): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -26,7 +26,7 @@ class JobController extends AbstractApiController
 
 
     #[Route("{serviceId}/job", name: "api_jobs_get", methods: ["GET"])]
-    public function getJobs(int $serviceId, JobRepository $jobRepository): Response
+    public function getJobs(int $serviceId, JobRepositoryInterface $jobRepository): Response
     {
         /** @var User $user */
         $user = $this->getUser();

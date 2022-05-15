@@ -11,8 +11,8 @@ use App\Entity\Job;
 use App\Entity\Service;
 use App\Entity\User;
 use App\Message\JobMessage;
-use App\Repository\ProductRepository;
-use App\Repository\ServiceRepository;
+use App\Repository\ProductRepositoryInterface;
+use App\Repository\ServiceRepositoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -22,7 +22,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ServiceController extends AbstractApiController
 {
     #[Route("services/{id}", name: "api_services_get_one", methods: ["GET"])]
-    public function getService(int $id, ServiceRepository $serviceRepository): Response
+    public function getService(int $id, ServiceRepositoryInterface $serviceRepository): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -37,7 +37,7 @@ class ServiceController extends AbstractApiController
     }
 
     #[Route("services", name: "api_services_get", methods: ["GET"])]
-    public function getServices(ServiceRepository $serviceRepository): Response
+    public function getServices(ServiceRepositoryInterface $serviceRepository): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -48,7 +48,7 @@ class ServiceController extends AbstractApiController
     }
 
     #[Route("services", name: "api_services_post", methods: ["POST"])]
-    public function createService(Request $request, ProductRepository $productRepository): Response
+    public function createService(Request $request, ProductRepositoryInterface $productRepository): Response
     {
         /** @var CreateServiceDto $createService */
         $createService = $this->deserialize($request, CreateServiceDto::class);
@@ -82,8 +82,13 @@ class ServiceController extends AbstractApiController
     }
 
     #[Route("services/{id}", name: "api_services_control", methods: ["PUT"])]
-    public function controlService(int $id, Request $request, ServiceRepository $serviceRepository, MessageBusInterface $messageBus): Response
-    {
+    public function controlService(
+        int $id,
+        Request $request,
+        ServiceRepositoryInterface $serviceRepository,
+        MessageBusInterface $messageBus
+    ): Response {
+
         /** @var ServiceControlDto $serviceControl */
         $serviceControl = $this->deserialize($request, ServiceControlDto::class);
 
@@ -95,7 +100,7 @@ class ServiceController extends AbstractApiController
 
         $service = $serviceRepository->find($id);
 
-        if (!$service) {
+        if (null === $service) {
             return $this->error('cannot find service');
         }
 

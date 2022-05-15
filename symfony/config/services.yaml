@@ -21,8 +21,14 @@ services:
       - '../src/Entity/'
       - '../src/Kernel.php'
 
-  App\Resources\AdminResources\AdminResources: ~
-  App\Resources\AdminResources\AdminResourcesNew: ~
+  App\Resources\AdminResources\AdminResources:
+    tags: [ 'admin_resources' ]
+    arguments:
+      - arg: true
+  App\Resources\AdminResources\AdminResourcesNew:
+    tags: [ 'admin_resources' ]
+    arguments:
+      - arg: false
 
   App\Resources\AdminResources\AdminResourcesInterface $updatedResources: '@App\Resources\AdminResources\AdminResourcesNew'
   App\Resources\AdminResources\AdminResourcesInterface: '@App\Resources\AdminResources\AdminResources'

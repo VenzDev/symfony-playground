@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Message\MailMessage;
-use App\Repository\AdminRepository;
+use App\Repository\AdminRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,7 +28,7 @@ class VerifyController extends AbstractController
     #[Route('/admin/verifyPassword', name: 'app_admin_verify_password')]
     public function verifyPassword(
         Request $request,
-        AdminRepository $adminRepository,
+        AdminRepositoryInterface $adminRepository,
         UserPasswordHasherInterface $passwordHasher,
         EntityManagerInterface $entityManager,
         MailMessage $mailMessage

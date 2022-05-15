@@ -18,12 +18,13 @@ final class AdminType extends AbstractType
             ->add('password')
             ->add('isVerified')
             ->add('isBlocked');
+
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class'      => Admin::class,
+            'data_class' => Admin::class,
             'csrf_protection' => true,
         ]);
     }

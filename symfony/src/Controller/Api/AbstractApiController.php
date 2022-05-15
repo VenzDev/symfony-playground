@@ -20,8 +20,11 @@ abstract class AbstractApiController extends AbstractController
     protected ValidatorInterface $validator;
     protected EntityManagerInterface $entityManager;
 
-    public function __construct(SerializerInterface $serializer, ValidatorInterface $validator, EntityManagerInterface $entityManager)
-    {
+    public function __construct(
+        SerializerInterface $serializer,
+        ValidatorInterface $validator,
+        EntityManagerInterface $entityManager
+    ) {
         $this->serializer = $serializer;
         $this->validator = $validator;
         $this->entityManager = $entityManager;
@@ -44,6 +47,10 @@ abstract class AbstractApiController extends AbstractController
 
     public function error(mixed $message, int $code = 422): Response
     {
-        return new Response($this->serialize(['status' => 'error', 'result' => $message]), $code, ['Content-Type' => $this->contentType]);
+        return new Response(
+            $this->serialize(['status' => 'error', 'result' => $message]),
+            $code,
+            ['Content-Type' => $this->contentType]
+        );
     }
 }

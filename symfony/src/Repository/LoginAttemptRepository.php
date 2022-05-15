@@ -7,47 +7,13 @@ namespace App\Repository;
 use App\Entity\Admin;
 use App\Entity\LoginAttempt;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @extends ServiceEntityRepository<LoginAttempt>
- *
- * @method LoginAttempt|null find($id, $lockMode = null, $lockVersion = null)
- * @method LoginAttempt|null findOneBy(array $criteria, array $orderBy = null)
- * @method LoginAttempt[]    findAll()
- * @method LoginAttempt[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- */
-class LoginAttemptRepository extends ServiceEntityRepository
+class LoginAttemptRepository extends ServiceEntityRepository implements LoginAttemptRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, LoginAttempt::class);
-    }
-
-    /**
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
-    public function add(LoginAttempt $entity, bool $flush = true): void
-    {
-        $this->_em->persist($entity);
-        if ($flush) {
-            $this->_em->flush();
-        }
-    }
-
-    /**
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
-    public function remove(LoginAttempt $entity, bool $flush = true): void
-    {
-        $this->_em->remove($entity);
-        if ($flush) {
-            $this->_em->flush();
-        }
     }
 
     /**
@@ -76,7 +42,7 @@ class LoginAttemptRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function getLoginAttempts()
+    public function getLoginAttempts(): array
     {
         return $this->createQueryBuilder('l')
             ->select('userAdmin.id', 'l.date')

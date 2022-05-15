@@ -6,6 +6,7 @@ namespace App\Controller\Admin\Pages;
 
 use App\Entity\Admin;
 use App\Form\AdminType;
+use App\Repository\AdminRepositoryInterface;
 use App\Resources\AdminGraph\AdminGraphInterface;
 use Exception;
 use App\Message\MailMessage;
@@ -30,19 +31,23 @@ class AdminController extends DashboardController
         return $this->render(
             'pages/admin/index.html.twig',
             [
-                'form'            => $form->createView(),
-                'admins'          => $adminResources->getAdminWithLastAttempt(),
-                'adminsCount'     => $adminResources->getAdminCount(),
+                'form' => $form->createView(),
+                'admins' => $adminResources->getAdminWithLastAttempt(),
+                'adminsCount' => $adminResources->getAdminCount(),
                 'unverifiedCount' => $adminResources->getUnverifiedCount(),
-                'blockedCount'    => $adminResources->getBlockedCount(),
-                'onlineCount'     => $adminResources->getOnlineTodayCount(),
+                'blockedCount' => $adminResources->getBlockedCount(),
+                'onlineCount' => $adminResources->getOnlineTodayCount(),
             ]
         );
     }
 
     #[Route('/admin/manageAdmins/block/{id}/{value}', name: 'app_admins_block')]
-    public function block(int $id, bool $value, AdminRepository $adminRepository, EntityManagerInterface $entityManager): Response
-    {
+    public function block(
+        int $id,
+        bool $value,
+        AdminRepositoryInterface $adminRepository,
+        EntityManagerInterface $entityManager
+    ): Response {
         $admin = $adminRepository->find($id);
 
         if ($admin) {
@@ -60,7 +65,7 @@ class AdminController extends DashboardController
     #[Route('/admin/manageAdmins/delete/{id}', name: 'app_admins_remove')]
     public function delete(
         int $id,
-        AdminRepository $adminRepository,
+        AdminRepositoryInterface $adminRepository,
         EntityManagerInterface $entityManager,
         LoginAttemptRepository $loginAttemptRepository
     ): Response {
